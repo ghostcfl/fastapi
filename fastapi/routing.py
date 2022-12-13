@@ -65,6 +65,7 @@ def _prepare_response_content(
     exclude_unset: bool,
     exclude_defaults: bool = False,
     exclude_none: bool = False,
+    by_alias:bool=True
 ) -> Any:
     if isinstance(res, BaseModel):
         read_with_orm_mode = getattr(res.__config__, "read_with_orm_mode", None)
@@ -75,7 +76,7 @@ def _prepare_response_content(
             # access instead of dict iteration, e.g. lazy relationships.
             return res
         return res.dict(
-            by_alias=True,
+            by_alias=by_alias,
             exclude_unset=exclude_unset,
             exclude_defaults=exclude_defaults,
             exclude_none=exclude_none,
@@ -124,6 +125,7 @@ async def serialize_response(
             exclude_unset=exclude_unset,
             exclude_defaults=exclude_defaults,
             exclude_none=exclude_none,
+            by_alias=by_alias,
         )
         if is_coroutine:
             value, errors_ = field.validate(response_content, {}, loc=("response",))
